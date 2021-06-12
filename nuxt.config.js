@@ -28,7 +28,7 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    ['@nuxtjs/dotenv', {filename: "../.env"}]
+    ['@nuxtjs/dotenv', {filename: "./.env"}]
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
