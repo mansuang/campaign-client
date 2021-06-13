@@ -1,30 +1,39 @@
 <template>
   <div class="container">
     Code Running on: {{ serverClient }}
+
     <br>
-    Campaign address : {{ accounts }}
+    Account address : {{ accounts }}
     <br>
     lastBlockNumber : {{ lastBlockNumber }}
+
   </div>
 </template>
 
 <script>
 
 import getWeb3 from "../helpers/getWeb3.js";
-const HDWalletProvider = require("@truffle/hdwallet-provider");
-
+import CampaignFactory from "../contracts/CampaignFactory.json";
 
 export default {
   async asyncData() {
       var web3 = await getWeb3();
       let lastBlockNumber = await web3.eth.getBlockNumber();
       let accounts = await web3.eth.getAccounts();
+      let factory  = new web3.eth.Contract(CampaignFactory.abi,'0xF51d44E6be69aD57796d1F2c62b417D90BdeBB69');
+
+    const campaigns = await factory.methods.getDeployedCampaigns().call();
+    // console.log(factory);
+    console.log(factory.options.address);
+    console.log(campaigns);
+    
 
       return {
           accounts: accounts,
           contract: null,
           serverClient: 'none',
-          lastBlockNumber: lastBlockNumber
+          lastBlockNumber: lastBlockNumber,
+          factory: null
       }
   },
   methods: {
