@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <h3>Open Campaigns</h3>
-    <sui-button content="New Campaign" icon="plus circle" label-position="left" primary style="margin-bottom:10px;" />
+    <NuxtLink is="sui-button" to="/campaigns/new" content="New Campaign" icon="plus circle" label-position="left" primary style="margin-bottom:10px;" />
     <sui-card-group>
       <sui-card v-for="address in value" :key="address" class="fluid">
         <sui-card-content>
