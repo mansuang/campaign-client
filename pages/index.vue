@@ -1,12 +1,6 @@
 <template>
-  <div class="container">
-    Code Running on: {{ serverClient }}
-
-    <br>
-    Account address : {{ accounts }}
-    <br>
-    lastBlockNumber : {{ lastBlockNumber }}
-
+  <div>
+    <campaigns :value="campaigns"></campaigns>
   </div>
 </template>
 
@@ -33,7 +27,7 @@ export default {
           contract: null,
           serverClient: 'none',
           lastBlockNumber: lastBlockNumber,
-          factory: null
+          campaigns: campaigns
       }
   },
   methods: {
