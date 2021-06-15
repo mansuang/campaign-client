@@ -42,11 +42,11 @@ export default {
         try{
             let web3 = await getWeb3();
             let accounts = await web3.eth.getAccounts();
-            let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,'0xF51d44E6be69aD57796d1F2c62b417D90BdeBB69');
+            let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,process.env.FACTORY_ADDR);
             let campaign = await factory.methods.createCampaign(this.minimumContribution).send({
                 from: accounts[0]
             });
-            
+
             this.$router.push({
                 path: '/'
             });
@@ -62,6 +62,9 @@ export default {
       hasError() {
           return this.errorMessage != null;
       }
+  },
+  created() {
+      console.log(process.env.FACTORY_ADDR);
   }
 };
 </script>

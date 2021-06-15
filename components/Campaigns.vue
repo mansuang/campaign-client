@@ -32,7 +32,7 @@ export default {
   methods: {
     async getCampaign() {
       let web3 = await getWeb3();
-      let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,'0xF51d44E6be69aD57796d1F2c62b417D90BdeBB69');
+      let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,process.env.FACTORY_ADDR);
       this.campaigns = await factory.methods.getDeployedCampaigns().call();
     }
   },
