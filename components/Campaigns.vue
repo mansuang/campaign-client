@@ -6,8 +6,9 @@
       <sui-card v-for="address in campaigns" :key="address" class="fluid">
         <sui-card-content>
           <sui-card-header>{{ address }}</sui-card-header>
-          <sui-card-description
-            ><a>View Campaign</a> </sui-card-description
+          <sui-card-description>
+            <NuxtLink :to="'/campaign/'+address">View Campaign</NuxtLink>
+          </sui-card-description
           >
         </sui-card-content>
       </sui-card>

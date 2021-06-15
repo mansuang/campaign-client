@@ -46,6 +46,10 @@ export default {
             let campaign = await factory.methods.createCampaign(this.minimumContribution).send({
                 from: accounts[0]
             });
+            
+            this.$router.push({
+                path: '/'
+            });
         }catch(err) {
             this.errorMessage = err.message;
         }
