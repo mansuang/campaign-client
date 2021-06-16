@@ -30,7 +30,7 @@ export default {
 
   },
   methods: {
-    async getCampaign() {
+    async getFactory() {
       let web3 = await getWeb3();
       let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,process.env.FACTORY_ADDR);
       this.campaigns = await factory.methods.getDeployedCampaigns().call();
@@ -38,7 +38,7 @@ export default {
   },
   async created() {
     console.log('begin getting campaigns');
-    await this.getCampaign();
+    await this.getFactory();
     console.log('getting campaigns completed');
   }
 };
