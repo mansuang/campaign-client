@@ -24,8 +24,8 @@
 
 <script>
 
-import getWeb3 from "../../helpers/getWeb3.js";
-import CampaignJson from "../../contracts/Campaign.json";
+import getWeb3 from "../../../helpers/getWeb3.js";
+import CampaignJson from "../../../contracts/Campaign.json";
 export default {
   name: 'contributionForm',
   props: ['address'],

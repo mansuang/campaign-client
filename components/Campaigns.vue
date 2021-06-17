@@ -7,7 +7,7 @@
         <sui-card-content>
           <sui-card-header>{{ address }}</sui-card-header>
           <sui-card-description>
-            <NuxtLink :to="'/campaign/'+address">View Campaign</NuxtLink>
+            <NuxtLink :to="'/campaigns/'+address">View Campaign</NuxtLink>
           </sui-card-description
           >
         </sui-card-content>

@@ -27,19 +27,25 @@
       </sui-grid-column>
     </sui-grid-row>
 
+    <sui-grid-row>
+      <sui-grid-column>
+        <NuxtLink is="sui-button" primary :to="'/campaigns/'+campaign_addr+'/requests'" >View Requests</NuxtLink>
+      </sui-grid-column>
+    </sui-grid-row>
+
   </sui-grid>
 </template>
 
 <script>
-import getWeb3 from "../../helpers/getWeb3.js";
-import CampaignJson from "../../contracts/Campaign.json";
+import getWeb3 from "../../../helpers/getWeb3.js";
+import CampaignJson from "../../../contracts/Campaign.json";
 import ContributionForm from "./ContributionForm.vue"
 
 export default {
     name: "campaignShow",
     async asyncData({ params }) {
         return { 
-                campaign_addr: params.campaign_addr,
+                campaign_addr: params.campaign,
                 inimumContribution: 0,
                 balance: 0,
                 numRequests: 0,
