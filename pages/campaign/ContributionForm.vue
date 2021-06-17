@@ -1,9 +1,17 @@
 <template>
-    <sui-form :error="hasError">  
+    <sui-form :error="hasError" :success="success">  
         <sui-form-field>
             <label>Amount to Contribute (ether)</label>
             <sui-input type="text" min="0" placeholder="100" v-model="contributionAmount" />
         </sui-form-field>
+
+        <sui-message success>
+            <sui-message-header>Contribution completd !</sui-message-header>
+            <p  style="overflow-wrap: break-word;">
+                You have contribute amount of <strong>{{ contributionAmount }} ether </strong> to campaign  <strong>{{ address }}</strong>
+            </p>
+        </sui-message>
+
         <sui-message error>
             <sui-message-header>Error</sui-message-header>
             <p>
@@ -25,7 +33,8 @@ export default {
       return {
           contributionAmount: 0,
           errorMessage: null,
-          loadingButton: false
+          loadingButton: false,
+          success: false
       }
   },
   methods: {
@@ -35,18 +44,21 @@ export default {
             return false;
         }
 
+        this.success = false;
         this.errorMessage = null;
         this.loadingButton = true;
 
         try{
             let web3 = await getWeb3();
             let accounts = await web3.eth.getAccounts();
-            let factory  = new web3.eth.Contract(CampaignJson.abi,this.address);
-            let campaign = await factory.methods.contribute().send({
+            let campaign  = new web3.eth.Contract(CampaignJson.abi,this.address);
+            await campaign.methods.contribute().send({
                 from: accounts[0],
                 value: web3.utils.toWei(this.contributionAmount,'ether')
             });
 
+            this.$emit('contributed',this.address)
+            this.success = true;
             // this.$router.push({
             //     path: '/'
             // });

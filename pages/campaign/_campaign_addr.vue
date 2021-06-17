@@ -23,9 +23,7 @@
         </sui-card-group>
       </sui-grid-column>
       <sui-grid-column :width="4">
-
-        <contribution-form :address="campaign_addr"></contribution-form>
-        
+        <contribution-form :address="campaign_addr" @contributed="getCampaign"></contribution-form>
       </sui-grid-column>
     </sui-grid-row>
 
@@ -38,6 +36,7 @@ import CampaignJson from "../../contracts/Campaign.json";
 import ContributionForm from "./ContributionForm.vue"
 
 export default {
+    name: "campaignShow",
     async asyncData({ params }) {
         return { 
                 campaign_addr: params.campaign_addr,
