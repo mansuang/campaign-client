@@ -1,5 +1,5 @@
 <template lang="html">
-  <sui-form :error="hasError">
+  <sui-form :error="hasError"  :success="success"> 
     <sui-header dividing>
          <NuxtLink :to="'/campaigns/'+campaign_addr+'/requests'"><sui-icon name="chevron circle left" /></NuxtLink> Create a Request
     </sui-header>
@@ -11,13 +11,21 @@
 
     <sui-form-field>
       <label>Value in Ether</label>
-      <sui-input type="number" min="0" placeholder="0.1" v-model="request.value" />
+      <sui-input type="text" min="0" placeholder="0.1" v-model="request.value" />
     </sui-form-field>
 
     <sui-form-field>
       <label>Recipient</label>
       <sui-input type="text" min="0" placeholder="0x0000000" v-model="request.recipient" />
     </sui-form-field>
+
+    <sui-message success>
+        <sui-message-header>Request sent success! </sui-message-header>
+        <p  style="overflow-wrap: break-word;">
+            You request for <strong>{{ request.description }} </strong> 
+            was successfully sent.
+        </p>
+    </sui-message>
 
     <sui-message error>
         <sui-message-header>Error</sui-message-header>
@@ -32,10 +40,10 @@
 
 <script>
 import getWeb3 from "~/helpers/getWeb3.js";
-import CampaignFactoryJson from "~/contracts/CampaignFactory.json";
+import CampaignJson from "~/contracts/Campaign.json";
 
 export default {
-  name: 'newCampaign',
+  name: 'createRequest',
   asyncData( { params }) {
       return {
           campaign_addr: params.campaign,
@@ -46,7 +54,8 @@ export default {
               description: '',
               value: 0,
               recipient: ''
-          }
+          },
+          success: false
       }
   },
   methods: {
@@ -55,20 +64,26 @@ export default {
         {
             return false;
         }
-
+        this.success = false;
         this.errorMessage = null;
         this.loadingButton = true;
 
         try{
             let web3 = await getWeb3();
             let accounts = await web3.eth.getAccounts();
-            let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,process.env.FACTORY_ADDR);
-            let campaign = await factory.methods.createCampaign(this.minimumContribution).send({
+            let factory  = new web3.eth.Contract(CampaignJson.abi,this.campaign_addr);
+            await factory.methods.createRequest(
+              this.request.description,
+              web3.utils.toWei( this.request.value,'ether'),
+              this.request.recipient
+            ).send({
                 from: accounts[0]
             });
 
+            // this.success = true;
+
             this.$router.push({
-                path: '/'
+                path: '/campaigns/'+this.campaign_addr+'/requests'
             });
         }catch(err) {
             this.errorMessage = err.message;
