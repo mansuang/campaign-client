@@ -1,24 +1,42 @@
 <template>
-  <div>
-    <sui-header>Campaign Show</sui-header>
-    <sui-divider />
-    <sui-card-group :items-per-row="2">
-      <sui-card v-for="(item,index) in items" :key="index">
-        <sui-card-content>
-          <sui-card-header style="overflow-wrap: break-word;">{{ item.header }}</sui-card-header>
-          <sui-card-meta>{{ item.meta }}</sui-card-meta>
-          <sui-card-description
-            >{{ item.description }}</sui-card-description
-          >
-        </sui-card-content>
-      </sui-card>
-    </sui-card-group>
-  </div>
+  <sui-grid>
+
+    <sui-grid-row>
+      <sui-grid-column>
+        <sui-header>Campaign Show</sui-header>
+        <sui-divider />
+      </sui-grid-column>
+    </sui-grid-row>
+
+    <sui-grid-row>
+      <sui-grid-column :width="12" divided>
+        <sui-card-group :items-per-row="2">
+          <sui-card v-for="(item,index) in items" :key="index">
+            <sui-card-content>
+              <sui-card-header style="overflow-wrap: break-word;">{{ item.header }}</sui-card-header>
+              <sui-card-meta>{{ item.meta }}</sui-card-meta>
+              <sui-card-description
+                >{{ item.description }}</sui-card-description
+              >
+            </sui-card-content>
+          </sui-card>
+        </sui-card-group>
+      </sui-grid-column>
+      <sui-grid-column :width="4">
+
+        <contribution-form :address="campaign_addr"></contribution-form>
+        
+      </sui-grid-column>
+    </sui-grid-row>
+
+  </sui-grid>
 </template>
 
 <script>
 import getWeb3 from "../../helpers/getWeb3.js";
 import CampaignJson from "../../contracts/Campaign.json";
+import ContributionForm from "./ContributionForm.vue"
+
 export default {
     async asyncData({ params }) {
         return { 
@@ -31,6 +49,9 @@ export default {
                 items: []
             }
     },
+  components: {
+    'contribution-form': ContributionForm
+  },
   methods: {
     async getCampaign(address) {
       console.log('getting campaign:'+address);
