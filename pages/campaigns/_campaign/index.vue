@@ -23,7 +23,7 @@
         </sui-card-group>
       </sui-grid-column>
       <sui-grid-column :width="4">
-        <contribution-form :address="campaign_addr" @contributed="getCampaign"></contribution-form>
+        <campaign-contribution-form :address="campaign_addr" @contributed="getCampaign"></campaign-contribution-form>
       </sui-grid-column>
     </sui-grid-row>
 
@@ -39,7 +39,6 @@
 <script>
 import getWeb3 from "../../../helpers/getWeb3.js";
 import CampaignJson from "../../../contracts/Campaign.json";
-import ContributionForm from "./ContributionForm.vue"
 
 export default {
     name: "campaignShow",
@@ -54,9 +53,6 @@ export default {
                 items: []
             }
     },
-  components: {
-    'contribution-form': ContributionForm
-  },
   methods: {
     async getCampaign(address) {
       console.log('getting campaign:'+address);
