@@ -3,6 +3,9 @@
 
     <sui-grid-row>
       <sui-grid-column>
+        <sui-header dividing>
+            <NuxtLink :to="'/'"><sui-icon name="chevron circle left" /></NuxtLink>  Campaign Show
+        </sui-header>
         <sui-header>Campaign Show</sui-header>
         <sui-divider />
       </sui-grid-column>
