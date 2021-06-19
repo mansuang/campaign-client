@@ -6,16 +6,106 @@
         requests address : {{ campaign_addr }}<br>
         <NuxtLink is="sui-button" primary :to="'/campaigns/'+campaign_addr+'/requests/new'" >Add Requests</NuxtLink>
         
+    
+        <sui-table celled>
+            <sui-table-header>
+                <sui-table-row>
+                    <sui-table-header-cell>ID</sui-table-header-cell>
+                    <sui-table-header-cell>Description</sui-table-header-cell>
+                    <sui-table-header-cell>Amount(Ether)</sui-table-header-cell>
+                    <sui-table-header-cell>Recepient</sui-table-header-cell>
+                    <sui-table-header-cell>Approval Count</sui-table-header-cell>
+                    <sui-table-header-cell>Approve</sui-table-header-cell>
+                    <sui-table-header-cell>Finalize</sui-table-header-cell>
+                </sui-table-row>
+            </sui-table-header>
+            <sui-table-body>
+                <sui-table-row v-for="(request,index) in requests" :key="index">
+                    <sui-table-cell>{{ index+1 }}</sui-table-cell>
+                    <sui-table-cell>{{ request.description }}</sui-table-cell>
+                    <sui-table-cell>{{ request.value }}</sui-table-cell>
+                    <sui-table-cell>{{ request.recipient }}</sui-table-cell>
+                    <sui-table-cell>{{ request.approvalsCount }}/ {{ approversCount }}</sui-table-cell>
+                    <sui-table-cell positive>Approve</sui-table-cell>
+                    <sui-table-cell negative>Finalize</sui-table-cell>
+                </sui-table-row>
+            </sui-table-body>
+        </sui-table>
     </div>
 </template>
 
 <script>
+// import web3 from 'web3'
+import getWeb3 from "~/helpers/getWeb3.js";
+import CampaignJson from "~/contracts/Campaign.json";
+
 export default {
-    name: "campaignRequests",
-    async asyncData({ params }) {
-        return { 
-                campaign_addr: params.campaign
-            }
-    },
-}
+  name: 'campaignRequests',
+  asyncData( { params }) {
+      return {
+          campaign_addr: params.campaign,
+          minimumContribution: 0,
+          errorMessage: null,
+          loadingButton: false,
+          request: {
+              description: '',
+              value: 0,
+              recipient: ''
+          },
+          success: false,
+          requests: [],
+          approversCount: 0
+      }
+  },
+  methods: {
+      async getRequests(action) {
+
+        try{
+            let web3 = await getWeb3();
+            let accounts = await web3.eth.getAccounts();
+            const campaign  = new web3.eth.Contract(CampaignJson.abi,this.campaign_addr);
+           
+
+            const requestCount = parseInt(await campaign.methods.getRequestsCount().call());
+            console.log('request count', requestCount);
+            this.approversCount = await campaign.methods.approversCount().call();
+            this.requests = await Promise.all(
+                Array(requestCount).fill().map((element, index) => {
+                    return campaign.methods.requests(index).call();
+                })
+            );
+            console.log(requests);
+            
+
+            this.success = true;
+
+        }catch(err) {
+            this.errorMessage = err.message;
+        }
+
+
+      },
+      async approve(index) {
+
+        try{
+            let web3 = await getWeb3();
+            let accounts = await web3.eth.getAccounts();
+            const campaign  = new web3.eth.Contract(CampaignJson.abi,this.campaign_addr);
+           
+
+
+        }catch(err) {
+            this.errorMessage = err.message;
+        }
+      }
+  },
+  computed: {
+      hasError() {
+          return this.errorMessage != null;
+      }
+  },
+  async created() {
+      await this.getRequests();
+  }
+};
 </script>
