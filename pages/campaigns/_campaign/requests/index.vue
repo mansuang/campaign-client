@@ -5,9 +5,14 @@
         </sui-header>
         requests address : {{ campaign_addr }}<br>
         <NuxtLink is="sui-button" primary :to="'/campaigns/'+campaign_addr+'/requests/new'" >Add Requests</NuxtLink>
-        
+        <sui-message error v-if="hasError">
+            <sui-message-header>Opps !</sui-message-header>
+            <p>
+                {{ errorMessage }}
+            </p>
+        </sui-message>
     
-        <sui-table celled>
+        <sui-table compact>
             <sui-table-header>
                 <sui-table-row>
                     <sui-table-header-cell>ID</sui-table-header-cell>
@@ -17,18 +22,19 @@
                     <sui-table-header-cell>Approval Count</sui-table-header-cell>
                     <sui-table-header-cell>Approve</sui-table-header-cell>
                     <sui-table-header-cell>Finalize</sui-table-header-cell>
+                    <sui-table-header-cell>Message</sui-table-header-cell>
                 </sui-table-row>
             </sui-table-header>
             <sui-table-body>
-                <sui-table-row v-for="(request,index) in requests" :key="index">
-                    <sui-table-cell>{{ index+1 }}</sui-table-cell>
-                    <sui-table-cell>{{ request.description }}</sui-table-cell>
-                    <sui-table-cell>{{ request.value }}</sui-table-cell>
-                    <sui-table-cell>{{ request.recipient }}</sui-table-cell>
-                    <sui-table-cell>{{ request.approvalsCount }}/ {{ approversCount }}</sui-table-cell>
-                    <sui-table-cell positive>Approve</sui-table-cell>
-                    <sui-table-cell negative>Finalize</sui-table-cell>
-                </sui-table-row>
+                <campaign-requests-row v-for="(request,index) in requests" 
+                    :request="request" 
+                    :key="index" 
+                    :index="index" 
+                    :approversCount="approversCount"
+                    :campaign_addr="campaign_addr"
+                    @approved="getRequests"
+                    @finalized="getRequests"
+                ></campaign-requests-row>
             </sui-table-body>
         </sui-table>
     </div>
@@ -53,12 +59,14 @@ export default {
               recipient: ''
           },
           success: false,
-          requests: [],
+          requests: null,
           approversCount: 0
       }
   },
   methods: {
-      async getRequests(action) {
+      async getRequests() {
+        
+        this.errorMessage = null;
 
         try{
             let web3 = await getWeb3();
@@ -74,7 +82,7 @@ export default {
                     return campaign.methods.requests(index).call();
                 })
             );
-            console.log(requests);
+            console.log(this.requests);
             
 
             this.success = true;
@@ -85,19 +93,7 @@ export default {
 
 
       },
-      async approve(index) {
 
-        try{
-            let web3 = await getWeb3();
-            let accounts = await web3.eth.getAccounts();
-            const campaign  = new web3.eth.Contract(CampaignJson.abi,this.campaign_addr);
-           
-
-
-        }catch(err) {
-            this.errorMessage = err.message;
-        }
-      }
   },
   computed: {
       hasError() {
