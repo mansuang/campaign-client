@@ -3,7 +3,7 @@
         <sui-header dividing>
             <NuxtLink :to="'/campaigns/'+campaign_addr"><sui-icon name="chevron circle left" /></NuxtLink>  Requests
         </sui-header>
-        requests address : {{ campaign_addr }}<br>
+
         <NuxtLink is="sui-button" primary :to="'/campaigns/'+campaign_addr+'/requests/new'" >Add Requests</NuxtLink>
         <sui-message error v-if="hasError">
             <sui-message-header>Opps !</sui-message-header>
@@ -12,37 +12,43 @@
             </p>
         </sui-message>
     
-        <sui-table compact>
-            <sui-table-header>
-                <sui-table-row>
-                    <sui-table-header-cell>ID</sui-table-header-cell>
-                    <sui-table-header-cell>Description</sui-table-header-cell>
-                    <sui-table-header-cell>Amount(Ether)</sui-table-header-cell>
-                    <sui-table-header-cell>Recepient</sui-table-header-cell>
-                    <sui-table-header-cell>Approval Count</sui-table-header-cell>
-                    <sui-table-header-cell>Approve</sui-table-header-cell>
-                    <sui-table-header-cell>Finalize</sui-table-header-cell>
-                    <sui-table-header-cell>Message</sui-table-header-cell>
-                </sui-table-row>
-            </sui-table-header>
-            <sui-table-body>
-                <campaign-requests-row v-for="(request,index) in requests" 
-                    :request="request" 
-                    :key="index" 
-                    :index="index" 
-                    :approversCount="approversCount"
-                    :campaign_addr="campaign_addr"
-                    @approved="getRequests"
-                    @finalized="getRequests"
-                ></campaign-requests-row>
-            </sui-table-body>
-        </sui-table>
+        <sui-segment>
+            <sui-dimmer :active="loading" inverted>
+                <sui-loader content="Loading..." />
+            </sui-dimmer>
+            
+            <sui-table compact>
+                <sui-table-header>
+                    <sui-table-row>
+                        <sui-table-header-cell>ID</sui-table-header-cell>
+                        <sui-table-header-cell>Description</sui-table-header-cell>
+                        <sui-table-header-cell>Amount(Ether)</sui-table-header-cell>
+                        <sui-table-header-cell>Recepient</sui-table-header-cell>
+                        <sui-table-header-cell>Approval Count</sui-table-header-cell>
+                        <sui-table-header-cell>Approve</sui-table-header-cell>
+                        <sui-table-header-cell>Finalize</sui-table-header-cell>
+                        <sui-table-header-cell>Message</sui-table-header-cell>
+                    </sui-table-row>
+                </sui-table-header>
+                <sui-table-body>
+                    <campaign-requests-incomplete-row v-for="(request,index) in requests" 
+                        :request="request" 
+                        :key="index" 
+                        :index="index" 
+                        :approversCount="approversCount"
+                        :campaign_addr="campaign_addr"
+                        @approved="getRequests"
+                        @finalized="getRequests"
+                    ></campaign-requests-incomplete-row>
+                </sui-table-body>
+            </sui-table>
+        </sui-segment>
     </div>
 </template>
 
 <script>
 // import web3 from 'web3'
-import getWeb3 from "~/helpers/getWeb3.js";
+import web3 from "~/helpers/web3.js";
 import CampaignJson from "~/contracts/Campaign.json";
 
 export default {
@@ -52,7 +58,7 @@ export default {
           campaign_addr: params.campaign,
           minimumContribution: 0,
           errorMessage: null,
-          loadingButton: false,
+          loading: false,
           request: {
               description: '',
               value: 0,
@@ -65,12 +71,12 @@ export default {
   },
   methods: {
       async getRequests() {
-        
+        this.loading = true;
         this.errorMessage = null;
 
         try{
-            let web3 = await getWeb3();
-            let accounts = await web3.eth.getAccounts();
+            // let web3 = await getWeb3();
+            // let accounts = await web3.eth.getAccounts();
             const campaign  = new web3.eth.Contract(CampaignJson.abi,this.campaign_addr);
            
 
@@ -91,6 +97,7 @@ export default {
             this.errorMessage = err.message;
         }
 
+        this.loading = false;
 
       },
 

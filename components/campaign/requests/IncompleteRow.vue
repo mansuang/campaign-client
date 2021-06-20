@@ -2,7 +2,7 @@
         <sui-table-row>
             <sui-table-cell>{{ index+1 }}</sui-table-cell>
             <sui-table-cell>{{ request.description }}</sui-table-cell>
-            <sui-table-cell>{{ request.value }}</sui-table-cell>
+            <sui-table-cell>{{ web3.utils.fromWei(request.value,'ether') }}</sui-table-cell>
             <sui-table-cell>{{ request.recipient }}</sui-table-cell>
             <sui-table-cell>{{ request.approvalsCount }}/ {{ approversCount }}</sui-table-cell>
             <sui-table-cell>
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import getWeb3 from "~/helpers/getWeb3.js";
+import web3 from "~/helpers/web3.js";
 import CampaignJson from "~/contracts/Campaign.json";
 
 export default {
@@ -33,7 +33,8 @@ export default {
     data(){
         return {
             errorMessage: null,
-            loading: false
+            loading: false,
+            web3: web3
         }
     },
     methods: {
@@ -44,7 +45,7 @@ export default {
             this.errorMessage = null;
 
             try{
-                let web3 = await getWeb3();
+                // let web3 = web3();
                 let accounts = await web3.eth.getAccounts();
                 const campaign  = new web3.eth.Contract(CampaignJson.abi,this.campaign_addr);
             
@@ -67,7 +68,7 @@ export default {
             this.errorMessage = null;
 
             try{
-                let web3 = await getWeb3();
+                // let web3 = await getWeb3();
                 let accounts = await web3.eth.getAccounts();
                 const campaign  = new web3.eth.Contract(CampaignJson.abi,this.campaign_addr);
             
