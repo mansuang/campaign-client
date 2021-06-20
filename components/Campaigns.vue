@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import getWeb3 from "../helpers/getWeb3.js";
+import web3 from "../helpers/web3.js";
 import CampaignFactoryJson from "../contracts/CampaignFactory.json";
 export default {
   name: 'Campaigns',
@@ -31,7 +31,6 @@ export default {
   },
   methods: {
     async getFactory() {
-      let web3 = await getWeb3();
       let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,process.env.FACTORY_ADDR);
       this.campaigns = await factory.methods.getDeployedCampaigns().call();
     }

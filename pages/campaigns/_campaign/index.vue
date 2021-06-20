@@ -78,8 +78,8 @@ export default {
           "The manager created this campaign and can create requests to withdraw money",
       },
       {
-        header: this.minimumContribution,
-        meta: "Minimum Contribution (wei)",
+        header: web3.utils.fromWei(this.minimumContribution,'ether'),
+        meta: "Minimum Contribution (ether)",
         description:
           "You must contribute at least this much wei to become an approver",
       },

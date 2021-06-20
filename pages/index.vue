@@ -16,12 +16,13 @@ export default {
 
   },
   async created() {
-    // this.init();
+
     if( typeof window !== "undefined" ){
       this.serverClient = "client";
     }else{
       this.serverClient = "server";
     }
+
   }
 }
 </script>

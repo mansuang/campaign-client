@@ -30,7 +30,7 @@
                         <sui-table-header-cell>Message</sui-table-header-cell>
                     </sui-table-row>
                 </sui-table-header>
-                <sui-table-body>
+                <sui-table-body v-if="requests && requests.length">
                     <campaign-requests-incomplete-row v-for="(request,index) in requests" 
                         :request="request" 
                         :key="index" 
@@ -40,6 +40,11 @@
                         @approved="getRequests"
                         @finalized="getRequests"
                     ></campaign-requests-incomplete-row>
+                </sui-table-body>
+                <sui-table-body v-else>
+                    <sui-table-row>
+                        <sui-table-cell colspan="8">There is no request at the moment.</sui-table-cell>
+                    </sui-table-row>
                 </sui-table-body>
             </sui-table>
         </sui-segment>

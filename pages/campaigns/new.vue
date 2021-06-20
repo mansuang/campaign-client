@@ -3,7 +3,7 @@
       <sui-header dividing>Create a Campaign</sui-header>
     <sui-form-field>
         
-      <label>Minimum Contribution (wei)</label>
+      <label>Minimum Contribution (Ether)</label>
       <sui-input type="text" min="0" placeholder="100" v-model="minimumContribution" />
     </sui-form-field>
     <sui-message error>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import getWeb3 from "../../helpers/getWeb3.js";
+import web3 from "../../helpers/web3.js";
 import CampaignFactoryJson from "../../contracts/CampaignFactory.json";
 
 export default {
@@ -40,10 +40,11 @@ export default {
         this.loadingButton = true;
 
         try{
-            let web3 = await getWeb3();
             let accounts = await web3.eth.getAccounts();
+
+            // let factory_addr = 
             let factory  = new web3.eth.Contract(CampaignFactoryJson.abi,process.env.FACTORY_ADDR);
-            let campaign = await factory.methods.createCampaign(this.minimumContribution).send({
+            let campaign = await factory.methods.createCampaign( web3.utils.toWei(this.minimumContribution,'ether')).send({
                 from: accounts[0]
             });
 
